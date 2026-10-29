@@ -13,8 +13,6 @@ public interface AccountService {
 
     AccountResponse createAccount(AccountCreateRequest request);
 
-//    List<AccountResponse> getAllAccounts();
-
     List<AccountResponse> getAccountsByCustomerId(Long customerId);
 
     AccountResponse getAccountById(Long id);
@@ -22,4 +20,6 @@ public interface AccountService {
     AccountResponse getAccountByAccountNumber(String accountNumber);
 
     Page<AccountResponse> getAllAccounts(Pageable pageable);
+
+    List<AccountResponse> searchAccounts(String accountType, String status);
 }

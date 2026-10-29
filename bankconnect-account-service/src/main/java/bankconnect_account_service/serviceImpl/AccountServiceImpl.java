@@ -1,5 +1,5 @@
 
-package bankconnect_account_service.serviceImple;
+package bankconnect_account_service.serviceImpl;
 
 import bankconnect_account_service.dto.AccountCreateRequest;
 import bankconnect_account_service.dto.AccountResponse;
@@ -52,16 +52,6 @@ public class AccountServiceImpl implements AccountService {
         return mapToResponse(savedAccount);
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<AccountResponse> getAllAccounts() {
-//
-//        return accountRepository.findAll()
-//                .stream()
-//                .map(this::mapToResponse)
-//                .collect(Collectors.toList());
-//    }
-
     @Override
     @Transactional(readOnly = true)
     public List<AccountResponse> getAccountsByCustomerId(
@@ -99,8 +89,35 @@ public class AccountServiceImpl implements AccountService {
                 .map(this::mapToResponse);
     }
 
-    private AccountResponse mapToResponse(Account account) {
+    @Override
+    @Transactional(readOnly = true)
+    public List<AccountResponse> searchAccounts(String accountType, String status) {
 
+        if (accountType != null) {
+            accountType = accountType.trim().toUpperCase();
+        }
+        if (status != null) {
+            status = status.trim().toUpperCase();
+        }
+
+        List<Account> accounts;
+
+        if (accountType != null && status != null) {
+            accounts = accountRepository.findByAccountTypeAndStatus(accountType, status);
+        } else if (accountType != null) {
+            accounts = accountRepository.findByAccountType(accountType);
+        } else if (status != null) {
+            accounts = accountRepository.findByStatus(status);
+        } else {
+            accounts = accountRepository.findAll();
+        }
+
+        return accounts.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private AccountResponse mapToResponse(Account account) {
         return new AccountResponse(
                 account.getId(),
                 account.getAccountNumber(),

@@ -23,17 +23,9 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<AccountResponse> createAccount(
             @Valid @RequestBody AccountCreateRequest request){
-
         AccountResponse response = accountService.createAccount(request);
-
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
-//    @GetMapping
-//    public ResponseEntity<List<AccountResponse>> getAllAccount(){
-//        List<AccountResponse> accountResponses = accountService.getAllAccounts();
-//        return new ResponseEntity<>(accountResponses, HttpStatus.OK);
-//    }
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<AccountResponse>> getAccountByCustomerId(
@@ -63,5 +55,13 @@ public class AccountController {
                 Page<AccountResponse> accountResponses =
                         accountService.getAllAccounts(PageRequest.of(page, size));
                 return new ResponseEntity<>(accountResponses, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AccountResponse>> searchAccount(
+            @RequestParam(required = false) String accountType,
+            @RequestParam(required = false) String status){
+        List<AccountResponse> accountResponses = accountService.searchAccounts(accountType, status);
+        return new ResponseEntity<>(accountResponses, HttpStatus.OK);
     }
 }
